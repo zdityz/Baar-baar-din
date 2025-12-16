@@ -1,0 +1,326 @@
+:root {
+    --text-color: #2d2d2d;
+    --bg-color: #ffffff;
+    --accent: #ff8fab;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-color);
+    background: var(--bg-color);
+    overflow-x: hidden;
+}
+
+.gradient-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1; overflow: hidden; background: #fff0f3;
+}
+.blob {
+    position: absolute; filter: blur(80px); border-radius: 50%; opacity: 0.6;
+    animation: float 10s infinite alternate;
+}
+.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #c9184a; }
+.blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #a2d2ff; animation-delay: -5s; }
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(20px, 50px) scale(1.1); }
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    height: 100vh; display: flex; justify-content: center; align-items: center;
+    text-align: center; position: relative;
+}
+.sub-text {
+    font-weight: 500; text-transform: uppercase; letter-spacing: 2px;
+    font-size: 1rem; margin-bottom: 10px; opacity: 0;
+}
+.main-title {
+    font-size: 12vw; line-height: 0.85; font-weight: 800; letter-spacing: -2px;
+    margin-bottom: 30px; opacity: 0; transform: translateY(50px);
+}
+.name-highlight { color: transparent; -webkit-text-stroke: 2px #2d2d2d; }
+.scroll-instruction { font-weight: 300; font-size: 0.9rem; opacity: 0; }
+
+/* Decor/Flowers */
+.decor-wrapper {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: -1; overflow: hidden;
+}
+.decor-item { position: absolute; opacity: 0; filter: drop-shadow(0 10px 15px rgba(255, 143, 171, 0.3)); }
+@keyframes dreamyFloat {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+.flower-1 { top: 15%; left: 10%; width: 150px; height: 150px; animation: dreamyFloat 6s ease-in-out infinite; }
+.heart-1 { bottom: 20%; right: 15%; width: 120px; height: 120px; animation: dreamyFloat 5s ease-in-out infinite reverse; }
+.heart-2 { top: 25%; right: 10%; width: 60px; height: 60px; transform: rotate(20deg); animation: dreamyFloat 7s ease-in-out infinite 1s; }
+
+/* --- SECTION 2: FULL SCREEN GALLERY --- */
+.gallery-section {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    padding: 0; 
+    z-index: 1; /* Keep it lower so Section 3 covers it cleanly */
+}
+
+.photo-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-container::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 1;
+}
+
+.photo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out, transform 8s ease;
+    transform: scale(1.1);
+    z-index: 0;
+}
+
+.photo.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.glass-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
+    z-index: 2;
+    background: transparent;
+    border: none;
+}
+
+.message-line {
+    display: block;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1; 
+    margin: 25px 0; 
+    opacity: 0;
+    transform: translateY(30px);
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.message-line .highlight-text {
+    display: inline-block;
+    line-height: 1; 
+    vertical-align: middle;
+}
+
+.highlight-text {
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 100px;
+    color: #ffccd5;
+}
+
+.star-1 {
+    top: 80%;
+    left: 30%;
+    width: 80px;
+    height: 80px;
+    transform: translate(-50%, -50%) rotate(15deg);
+    animation: dreamyFloat 4s ease-in-out infinite 2s;
+}
+
+.cake-1 {
+    bottom: 75%;
+    left: 75%;
+    width: 100px;
+    height: 100px;
+    animation: dreamyFloat 7s ease-in-out infinite 1s;
+}
+
+/* --- SECTION 3: GAME WORLD --- */
+.game-section {
+    min-height: 100vh;
+    width: 100%;
+    
+    /* Center Content Logic */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+    
+    position: relative;
+    background: #fff0f3; 
+    
+    /* FIX: Higher z-index ensures it sits ON TOP of the gallery */
+    z-index: 10; 
+    padding: 40px 0; 
+    box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
+}
+
+.game-map-wrapper {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+    z-index: 11;
+    
+    /* FIX: Flex column stacks Title and Map nicely */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-title {
+    /* FIX: RELATIVE positioning so it takes up space and pushes map down */
+    position: relative;
+    width: 100%;
+    text-align: center;
+    
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ff8fab;
+    text-shadow: 2px 2px 0px #fff;
+    line-height: 1.2;
+    
+    margin-bottom: 30px; /* Space between title and map */
+    z-index: 12;
+}
+
+/* --- RECTANGULAR MAP FIX --- */
+.game-map {
+    /* 1. Rectangular shape */
+    width: 80vw;
+    height: 50vw; 
+    
+    max-width: 1100px;
+    max-height: 680px;
+    
+    /* 2. Map Image Setup */
+    background-image: url('map.jpg'); 
+    background-size: 100% 100%; 
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    position: relative;
+    margin: 0 auto;
+    
+    /* Decoration */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 10px solid #ffffff;
+    border-radius: 15px; 
+    background-color: #fff;
+}
+
+.panda-avatar {
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem; 
+    transition: all 1.5s ease-in-out; 
+    z-index: 20; 
+    cursor: pointer;
+    text-align: center;
+    pointer-events: none;
+}
+
+.speech-bubble {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d2d2d;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    pointer-events: auto;
+}
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2d2d2d transparent transparent transparent;
+}
+.panda-avatar.talking .speech-bubble {
+    opacity: 1;
+}
+
+.zone {
+    position: absolute;
+    width: 80px; 
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.zone:hover .zone-label {
+    transform: scale(1.1) translateY(-5px);
+    background: #fff;
+    color: #ff8fab;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+.zone-label {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #2d2d2d;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(2px);
+}
+
+/* COORDINATES */
+.zone-secret { top: 70%; left: 5%; }
+.zone-mall { top: 35%; right: 20%; }
+.zone-rest { bottom: 45%; left: 23%; }
+.zone-cinema { bottom: 72%; left: 29%; }
+.zone-disco { top: 25%; right: 39%; }
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .main-title { font-size: 15vw; line-height: 1; }
+    .message-line { font-size: 2rem; }
+    .highlight-text { font-size: 60px; }
+    
+    /* Ensure map stays rectangular on phone */
+    .game-map { width: 95vw; height: 60vw; }
+    
+    .panda-avatar { font-size: 2.5rem; }
+    .zone-label { font-size: 0.7rem; padding: 2px 6px; }
+    
+    /* Adjust padding for mobile to prevent extra white space */
+    .game-section { padding: 60px 0; }
+    .game-title { font-size: 1.8rem; margin-bottom: 20px; }
+}

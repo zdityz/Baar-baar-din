@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD Kuhuji</title>
+    <link rel="stylesheet" href="trial2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. PRELOADER CSS --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff0f3; z-index: 9999;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+            transition: opacity 1s ease-out;
+        }
+        .heart-loader { font-size: 4rem; animation: heartbeat 1s infinite; }
+        .loader-text { font-family: 'Outfit', sans-serif; margin-top: 10px; color: #ff8fab; font-weight: bold; }
+        @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        
+        .flying-messenger {
+            position: absolute;
+            z-index: 50;
+            cursor: pointer;
+            animation: flyAround 25s linear infinite;
+            filter: drop-shadow(0 10px 5px rgba(0,0,0,0.1));
+            transition: transform 0.3s;
+        }
+
+        .flying-messenger:hover {
+            animation-play-state: paused; /* Stops flying when hovered so she can click */
+            transform: scale(1.2);
+        }
+
+        .balloon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .balloon { font-size: 3rem; animation: bob 2s ease-in-out infinite alternate; }
+        .string { width: 2px; height: 20px; background: rgba(0,0,0,0.3); }
+        .envelope { font-size: 1.5rem; background: white; border-radius: 5px; padding: 2px; }
+
+        /* The Flight Path */
+        @keyframes flyAround {
+            0%   { left: 10%; top: 80%; transform: rotate(5deg); }
+            25%  { left: 30%; top: 20%; transform: rotate(-5deg); }
+            50%  { left: 80%; top: 10%; transform: rotate(5deg); }
+            75%  { left: 90%; top: 70%; transform: rotate(-5deg); }
+            100% { left: 10%; top: 80%; transform: rotate(5deg); }
+        }
+
+        @keyframes bob {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* --- 3. SECRET LETTER MODAL --- */
+        .letter-overlay {
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.7); 
+            z-index: 10000;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .letter-paper {
+            background-color: #fdfbf7;
+            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png"); /* Subtle texture */
+            width: 90%; max-width: 1000px;
+            padding: 40px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            position: relative;
+            transform: translateY(100px) scale(0.8);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 5px;
+        }
+
+        /* Paper Lines Effect */
+        .letter-content {
+            font-family: 'Dancing Script', cursive; /* Handwritten Font */
+            font-size: 1.4rem;
+            color: #4a4a4a;
+            line-height: 1.8;
+            border: 2px solid #e3d2b8;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .letter-content h2 {
+            text-align: center;
+            color: #d63384;
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #ffccd5;
+            padding-bottom: 10px;
+        }
+
+        .letter-close-btn {
+            position: absolute;
+            top: -15px; right: -15px;
+            background: #ff3e6c;
+            color: white;
+            border: none;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .letter-close-btn:hover { transform: scale(1.1) rotate(90deg); }
+
+        /* Animation classes for JS */
+        .show-overlay { display: flex; opacity: 1; }
+        .show-paper { transform: translateY(0) scale(1) rotate(-2deg); }
+
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="heart-loader">❤️</div>
+        <div class="loader-text">Loading Your World...</div>
+    </div>
+
+    <div class="gradient-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2 class="sub-text">It's your day</h2>
+            <h1 class="main-title">HAPPY<br>BIRTHDAY<br><span class="name-highlight">KUHUJI</span></h1>
+            <p class="scroll-instruction">Scroll to vibe</p>
+        </div>
+
+        <div class="decor-wrapper">
+            <div class="decor-item flower-1">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="35" r="15" fill="#ffccd5"/>
+                    <circle cx="65" cy="45" r="15" fill="#ffccd5"/>
+                    <circle cx="60" cy="65" r="15" fill="#ffccd5"/>
+                    <circle cx="40" cy="65" r="15" fill="#ffccd5"/>
+                    <circle cx="35" cy="45" r="15" fill="#ffccd5"/>
+                    <circle cx="50" cy="50" r="8" fill="#fff"/>
+                </svg>
+            </div>
+            <div class="decor-item heart-1">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z" fill="#ff8fab"/>
+                </svg>
+            </div>
+            <div class="decor-item star-1">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L14.09 8.26L21 9.27L16 14.14L17.18 21.02L12 17.77L6.82 21.02L8 14.14L3 9.27L9.91 8.26L12 2Z" fill="#ffea7f"/>
+                </svg>
+            </div>
+            <div class="decor-item cake-1">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="12" y="20" width="40" height="30" fill="#8B4513" stroke="#5C3317" stroke-width="2"/>
+                    <rect x="16" y="12" width="32" height="10" fill="#F5E1C8"/>
+                    <rect x="24" y="8" width="16" height="8" fill="#3C1F0E"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <section class="gallery-section">
+        <div class="photo-container">
+            <img src="ani2.jpeg" class="photo active">
+            <img src="ani3.jpeg" class="photo">
+            <img src="ani1.png" class="photo">
+            <img src="ani4.jpeg" class="photo">
+            <img src="ani5.jpeg" class="photo">
+            <img src="ani6.png" class="photo">
+            <img src="ani7.png" class="photo">
+            
+            <div class="glass-overlay">
+                <span class="message-line">Let's dive in</span>
+                <span class="message-line">and enjoy the <span class="highlight-text">happiest</span></span>
+                <span class="message-line">day of all of our lives.</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="game-section">
+        <div class="game-container">
+            <div class="game-map-wrapper">
+                <h2 class="game-title">Let's Explore the City with PANDU BHAI ❤️</h2>
+                
+                <div class="game-map">
+                    
+                    <div class="flying-messenger" onclick="openLetter()">
+                        <div class="balloon-container">
+                            <div class="balloon">🎈</div>
+                            <div class="string"></div>
+                            <div class="envelope">💌</div>
+                        </div>
+                    </div>
+
+                    <div class="panda-avatar" id="panda">
+                        <div class="speech-bubble" id="panda-speech">Where to?</div>
+                        <div class="panda-body">🐼</div> 
+                    </div>
+
+                    <div class="zone zone-secret" onclick="movePanda('secret', 'Shh... It\'s a secret!', 'letter')">
+                        <span class="zone-label">Secret Place 🤫</span>
+                    </div>
+
+                    <div class="zone zone-mall" onclick="movePanda('mall', 'Let\'s go shopping!', 'gifts')">
+                        <span class="zone-label">Shopping Mall 🛍️</span>
+                    </div>
+
+                    <div class="zone zone-rest" onclick="movePanda('rest', 'I\'m hungry!', 'food')">
+                        <span class="zone-label">Restaurant 🍜</span>
+                    </div>
+
+                    <div class="zone zone-cinema" onclick="movePanda('cinema', 'Movie time?', 'gallery')">
+                        <span class="zone-label">Cinema 🎬</span>
+                    </div>
+
+                    <div class="zone zone-disco" onclick="movePanda('disco', 'Let\'s Dance!', 'music')">
+                        <span class="zone-label">The Disco 💃</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="letter-overlay" id="letterModal">
+        <div class="letter-paper" id="letterPaper">
+            <button class="letter-close-btn" onclick="closeLetter()">×</button>
+            <div class="letter-content">
+                <h2>HAPPY BIRTHDAYY BABYYY ❤️❤️❤️</h2>
+                <p>
+                    This is one of the most special days for a lot of people in the world and the most special day for me. A combination of a lot of dumb ideas brought together to create this khichdi. I know this isn't even a percent of what you deserve but more is coming and I will try 100x more next time to make sure you have a good time.
+                    Don't wanna bore you cuz obviously you have my long ass message in your dms. Just want to tell you one thing rather remind you about it, YOU ARE THE MOST PRECIOUS THING TO ALL OF US.
+                    Thank you for just showing up everyday. I'm really grateful to have you in my life. Thank you for everything and here I promise you that I will always try to be the best guy for you.<br>Thank you for being, Kuhuji.<br>
+                    Forever yours,<br>
+                    Boobie ❤️
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="trial.js"></script>
+
+    <script>
+        // PRELOADER
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('preloader');
+                loader.style.opacity = '0';
+                
+                // START ANIMATIONS NOW
+                if (typeof startCelebration === "function") {
+                    startCelebration();
+                } else {
+                    console.error("startCelebration function not found!");
+                }
+
+                setTimeout(() => { loader.style.display = 'none'; }, 1000);
+            }, 1500);
+        });
+
+        // LETTER LOGIC
+        function openLetter() {
+            const modal = document.getElementById('letterModal');
+            const paper = document.getElementById('letterPaper');
+            
+            modal.classList.add('show-overlay'); // Make background visible
+            
+            // Small delay so the pop-up transition works nicely
+            setTimeout(() => {
+                paper.classList.add('show-paper');
+            }, 100);
+        }
+
+        function closeLetter() {
+            const modal = document.getElementById('letterModal');
+            const paper = document.getElementById('letterPaper');
+            
+            paper.classList.remove('show-paper');
+            
+            setTimeout(() => {
+                modal.classList.remove('show-overlay');
+            }, 300); // Wait for paper to shrink before hiding bg
+        }
+    </script>
+</body>
+</html>
