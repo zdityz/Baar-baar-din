@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KuhuFlix - Movie Date</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #141414;
+            --primary: #e50914; /* Netflix Red */
+            --text-white: #ffffff;
+            --text-gray: #b3b3b3;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            position: fixed; top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 4%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%);
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', cursive;
+            color: var(--primary);
+            font-size: 2.5rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(229, 9, 20, 0.7);
+        }
+
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 35px; height: 35px; border-radius: 4px; background: #ddd; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            height: 70vh;
+            width: 100%;
+            /* Generic Cinema Background */
+            background: url('https://images.unsplash.com/photo-1574375927938-d5a98e8efe30?q=80&w=2069&auto=format&fit=crop') center/cover no-repeat; 
+            display: flex; align-items: center; padding-left: 4%;
+        }
+
+        .hero::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, #141414 0%, transparent 80%),
+                        linear-gradient(to right, #141414 0%, transparent 60%);
+        }
+
+        .hero-content { z-index: 10; max-width: 600px; }
+
+        .movie-logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .description {
+            font-size: 1.2rem; margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            color: #e5e5e5;
+        }
+
+        /* --- SECTION TITLES --- */
+        .row-header {
+            padding-left: 4%;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #e5e5e5;
+            z-index: 20; position: relative;
+        }
+
+        /* --- SCROLLING ROW (Manual Scroll) --- */
+        .scroll-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 20px 4%;
+            padding-right: 4%;
+        }
+        .scroll-row::-webkit-scrollbar { display: none; }
+
+        /* --- MARQUEE ROW (Automatic Flowing) --- */
+        .marquee-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.02), transparent);
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+            animation: flowLeft 30s linear infinite;
+        }
+
+        .marquee-content:hover {
+            animation-play-state: paused; /* Pause on hover */
+        }
+
+        @keyframes flowLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Move half way (since we duplicate content) */
+        }
+
+        /* --- POSTER CARDS --- */
+        .movie-card {
+            position: relative;
+            flex-shrink: 0;
+            width: 200px; /* Standard Poster Width */
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .movie-card img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.1);
+            z-index: 50;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+            border: 2px solid white;
+        }
+
+        /* Platform Badge (Netflix/Prime) */
+        .platform-badge {
+            position: absolute; top: 10px; right: 10px;
+            padding: 4px 8px; font-size: 0.7rem; font-weight: bold;
+            color: white; border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+        }
+        .badge-netflix { background: #e50914; }
+        .badge-prime { background: #00A8E1; }
+        .badge-hotstar { background: #133A94; }
+        .badge-zee5 { background: #000000; }
+
+        /* BACK BUTTON */
+        .back-home {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--primary); color: white;
+            padding: 10px 20px; border-radius: 50px;
+            text-decoration: none; font-weight: bold;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .back-home:hover { transform: scale(1.1); }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">KIWIFLIX</a>
+        <div class="user-profile">
+            <span>Baddie</span>
+            <div class="avatar" style="background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Kuhu'); background-size: cover;"></div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="movie-logo">MOVIE DATE<br>NIGHT?</h1>
+            <p class="description">
+                Grab Pandu your plushy (and me). Choose a movie from the list of movies we need to watch.
+                <br>Click any poster to start.
+            </p>
+        </div>
+    </header>
+
+    <div class="row-header">Part of our Hearts</div>
+    <div class="scroll-row">
+        
+        <a href="https://www.zee5.com/search?q=Players" target="_blank" class="movie-card">
+            <span class="platform-badge badge-zee5">ZEE5</span>
+            <img src="images/movie1.jpg" alt="Players">
+        </a>
+
+        <a href="https://www.netflix.com/search?q=Tu%20jhoothi%20mai%20makkar&jbv=81382254" target="_blank" class="movie-card">
+            <span class="platform-badge badge-netflix">Netflix</span>
+            <img src="images/movie2.jpg" alt="Tu Jhoothi Mai Makkar">
+        </a>
+
+        <a href="https://www.google.com/search?gs_ssp=eJzj4tbP1TcwNCwzLYuvMmD0Yk_Pz8lNTMwBAEjhBsw&q=golmaal&oq=golma&gs_lcrp=EgZjaHJvbWUqDwgBEC4YQxixAxiABBiKBTIGCAAQRRg5Mg8IARAuGEMYsQMYgAQYigUyDwgCEC4YQxixAxiABBiKBTIPCAMQLhhDGLEDGIAEGIoFMg8IBBAAGEMYsQMYgAQYigUyDwgFEC4YQxixAxiABBiKBTIPCAYQLhhDGLEDGIAEGIoFMgoIBxAuGLEDGIAEMgwICBAAGEMYgAQYigXSAQgzMTQ4ajBqN6gCALACAA&sourceid=chrome&ie=UTF-8#fpstate=ive&vld=cid:4f5e217d,vid:UM14XILr0bE,st:0" target="_blank" class="movie-card">
+            <span class="platform-badge badge-netflix">YouTube</span>
+            <img src="images/movie3.jpeg" alt="Golmaal">
+        </a>
+
+        <a href="https://www.primevideo.com/search/ref=atv_nb_sr?phrase=3%20Idiots" target="_blank" class="movie-card">
+            <span class="platform-badge badge-prime">Prime</span>
+            <img src="https://upload.wikimedia.org/wikipedia/en/d/df/3_idiots_poster.jpg" alt="3 Idiots">
+        </a>
+        
+         <a href="https://www.netflix.com/title/70032594" target="_blank" class="movie-card">
+            <span class="platform-badge badge-netflix">Netflix</span>
+            <img src="images/movie4.jpg" alt="Pride & Prejudice">
+        </a>
+
+    </div>
+
+
+    <div class="row-header">WE NEED TO FINISH THESE ASAP</div>
+    
+    <div class="marquee-container">
+        <div class="marquee-content">
+            
+            <a href="https://www.netflix.com/title/80203147" target="_blank" class="movie-card">
+                <span class="platform-badge badge-netflix">Netflix</span>
+                <img src="images/movie5.jpg" alt="To All The Boys I have Loved Before">
+            </a>
+
+            <a href="https://www.netflix.com/title/60026122" target="_blank" class="movie-card">
+                <span class="platform-badge badge-netflix">Netflix</span>
+                <img src="images/movie6.jpg" alt="How to Lose a Guy in 10 Days">
+            </a>
+
+            <a href="https://www.hotstar.com/in/movies/500-days-of-summer/1770000925" target="_blank" class="movie-card">
+                <span class="platform-badge badge-hotstar">Hotstar</span>
+                <img src="images/movie7.avif" alt="(500) Days of Summer">
+            </a>
+            
+            <a href="https://www.primevideo.com/dp/amzn1.dv.gti.d4a9f693-b8af-c48d-821e-a54f41ba81ed?autoplay=0&ref_=atv_cf_strg_wb" target="_blank" class="movie-card">
+                <span class="platform-badge badge-prime">Prime</span>
+                <img src="images/movie8.jpeg" alt="No Strings Attached">
+            </a>
+
+            <a href="https://www.hotstar.com/in/movies/zootopia/1260017510" target="_blank" class="movie-card">
+                <span class="platform-badge badge-hotstar">Hotstar</span>
+                <img src="images/movie9.jpeg" alt="Zootopia">
+            </a>
+
+           <a href="https://www.netflix.com/title/80203147" target="_blank" class="movie-card">
+                <span class="platform-badge badge-netflix">Netflix</span>
+                <img src="images/movie5.jpg" alt="To All The Boys I have Loved Before">
+            </a>
+
+            <a href="https://www.netflix.com/title/60026122" target="_blank" class="movie-card">
+                <span class="platform-badge badge-netflix">Netflix</span>
+                <img src="images/movie6.jpg" alt="How to Lose a Guy in 10 Days">
+            </a>
+
+            <a href="https://www.hotstar.com/in/movies/500-days-of-summer/1770000925" target="_blank" class="movie-card">
+                <span class="platform-badge badge-hotstar">Hotstar</span>
+                <img src="images/movie7.avif" alt="(500) Days of Summer">
+            </a>
+            
+            <a href="https://www.primevideo.com/dp/amzn1.dv.gti.d4a9f693-b8af-c48d-821e-a54f41ba81ed?autoplay=0&ref_=atv_cf_strg_wb" target="_blank" class="movie-card">
+                <span class="platform-badge badge-prime">Prime</span>
+                <img src="images/movie8.jpeg" alt="No Strings Attached">
+            </a>
+
+            <a href="https://www.hotstar.com/in/movies/zootopia/1260017510" target="_blank" class="movie-card">
+                <span class="platform-badge badge-hotstar">Hotstar</span>
+                <img src="images/movie9.jpeg" alt="Zootopia">
+            </a>
+
+            <a href="https://www.netflix.com/title/80203147" target="_blank" class="movie-card">
+                <span class="platform-badge badge-netflix">Netflix</span>
+                <img src="images/movie5.jpg" alt="To All The Boys I have Loved Before">
+            </a>
+
+            <a href="https://www.netflix.com/title/60026122" target="_blank" class="movie-card">
+                <span class="platform-badge badge-netflix">Netflix</span>
+                <img src="images/movie6.jpg" alt="How to Lose a Guy in 10 Days">
+            </a>
+
+            <a href="https://www.hotstar.com/in/movies/500-days-of-summer/1770000925" target="_blank" class="movie-card">
+                <span class="platform-badge badge-hotstar">Hotstar</span>
+                <img src="images/movie7.avif" alt="(500) Days of Summer">
+            </a>
+            
+            <a href="https://www.primevideo.com/dp/amzn1.dv.gti.d4a9f693-b8af-c48d-821e-a54f41ba81ed?autoplay=0&ref_=atv_cf_strg_wb" target="_blank" class="movie-card">
+                <span class="platform-badge badge-prime">Prime</span>
+                <img src="images/movie8.jpeg" alt="No Strings Attached">
+            </a>
+
+            <a href="https://www.hotstar.com/in/movies/zootopia/1260017510" target="_blank" class="movie-card">
+                <span class="platform-badge badge-hotstar">Hotstar</span>
+                <img src="images/movie9.jpeg" alt="Zootopia">
+            </a>
+
+        </div>
+    </div>
+
+    <a href="trial1.html" class="back-home">📍 Back to City</a>
+
+</body>
+</html>

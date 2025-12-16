@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Disco Night</title>
+    <style>
+        /* --- CORE & BACKGROUND --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            /* YOUR BACKGROUND IMAGE HERE */
+            background-image: url('bg.png'); 
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LIGHTING FX LAYERS --- */
+        .ambient-layer {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0, 0, 50, 0.6);
+            z-index: 1;
+            pointer-events: none;
+            transition: background 1s; 
+        }
+
+        .disco-lights {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at 50% 20%, rgba(255, 0, 255, 0.4), transparent 60%),
+                        radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.4), transparent 50%);
+            z-index: 2;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            animation: light-pulse 4s infinite alternate;
+            transition: opacity 1s;
+        }
+
+        @keyframes light-pulse {
+            0% { opacity: 0.5; filter: hue-rotate(0deg); }
+            100% { opacity: 1; filter: hue-rotate(90deg); }
+        }
+
+        .romantic-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center bottom, rgba(255, 20, 147, 0.5) 0%, rgba(20, 0, 10, 0.95) 80%);
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .strobe-flash {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: white;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        /* --- THE STAGE AREA --- */
+        .stage-container {
+            flex-grow: 1;
+            position: relative;
+            z-index: 5;
+            perspective: 1000px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 20px;
+        }
+
+        .dancer-img {
+            height: 250px; 
+            width: auto;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+            animation: idle-groove 2s infinite ease-in-out alternate;
+            transform-origin: bottom center;
+            transition: all 0.8s ease; 
+        }
+
+        .vanish {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        /* --- BACKGROUND DANCERS --- */
+        .bg-dancers-row {
+            position: absolute;
+            bottom: 180px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.7;
+            filter: blur(1px) brightness(0.8);
+            z-index: 4;
+            transition: opacity 1s;
+        }
+
+        .bg-dancer-img {
+            height: 180px;
+            animation: bg-bob 1.5s infinite ease-in-out alternate;
+            transition: opacity 0.8s;
+        }
+        .bg-dancer-img:nth-child(1) { animation-delay: 0.2s; }
+        .bg-dancer-img:nth-child(2) { animation-delay: 0.5s; }
+        .bg-dancer-img:nth-child(3) { animation-delay: 0.8s; }
+
+        /* --- MAIN DANCERS --- */
+        .main-dancers-row {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            gap: 50px;
+            align-items: flex-end;
+        }
+        
+        #main2 {
+            height: 280px;
+            z-index: 11;
+        }
+
+        /* ====== ANIMATIONS ====== */
+        @keyframes idle-groove {
+            0% { transform: translateY(0) rotate(-2deg) scaleY(1); }
+            100% { transform: translateY(-10px) rotate(2deg) scaleY(1.02); }
+        }
+
+        @keyframes bg-bob {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        .move-fever { animation: fever-dance 1s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; }
+        @keyframes fever-dance {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(-15deg) translateX(-10px); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-20px) rotate(15deg) translateX(10px); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        .move-hop { animation: super-hop 0.8s ease-out !important; }
+        @keyframes super-hop {
+            0% { transform: scale(1, 1) translateY(0); }
+            20% { transform: scale(1.1, 0.8) translateY(20px); }
+            50% { transform: scale(0.9, 1.1) translateY(-200px) rotateY(180deg); }
+            100% { transform: scale(1, 1) translateY(0) rotateY(360deg); }
+        }
+
+        .move-shake { animation: earthquake 0.5s infinite linear !important; }
+        @keyframes earthquake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-15px, 5px) rotate(-5deg); filter: hue-rotate(45deg); }
+            50% { transform: translate(15px, -5px) rotate(5deg); filter: hue-rotate(90deg); }
+            75% { transform: translate(-5px, 15px) rotate(-3deg); filter: hue-rotate(135deg); }
+            100% { transform: translate(0, 0) rotate(0deg); filter: hue-rotate(180deg);}
+        }
+
+        /* ====== ROMANTIC MOVES ====== */
+        .romantic-pos-1 {
+            animation: slow-dance-1 3s infinite ease-in-out !important;
+            filter: drop-shadow(0 0 20px hotpink) !important;
+            z-index: 100;
+        }
+
+        .romantic-pos-2 {
+            animation: slow-dance-2 3s infinite ease-in-out !important;
+            filter: drop-shadow(0 0 20px hotpink) !important;
+            z-index: 100;
+        }
+
+        @keyframes slow-dance-1 {
+            0% { transform: translateX(35px) rotate(10deg) scale(1.1); }
+            50% { transform: translateX(35px) rotate(-5deg) scale(1.1); } 
+            100% { transform: translateX(35px) rotate(10deg) scale(1.1); }
+        }
+
+        @keyframes slow-dance-2 {
+            0% { transform: translateX(-35px) rotate(5deg) scale(1.1); }
+            50% { transform: translateX(-35px) rotate(-10deg) scale(1.1); }
+            100% { transform: translateX(-35px) rotate(5deg) scale(1.1); }
+        }
+
+
+        /* --- DJ DECK & MUSIC PLAYER --- */
+        .dj-deck-wrapper {
+            z-index: 30;
+            background: rgba(0,0,0,0.85);
+            border-top: 3px solid #00ffff;
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 -5px 30px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Player Container */
+        .music-player {
+            display: flex;
+            flex-direction: column; /* Stacked layout for slider */
+            align-items: center;
+            gap: 10px;
+            background: #222;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .song-info {
+            color: #00ff00;
+            font-size: 14px;
+            text-transform: uppercase;
+            overflow: hidden;
+            white-space: nowrap;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px #00ff00;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+
+        .player-controls button {
+            background: transparent;
+            border: 1px solid #fff;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            margin-left: 5px;
+        }
+
+        .player-controls button:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 10px white;
+        }
+
+        /* SLIDER STYLES */
+        .slider-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #444;
+            border-radius: 5px;
+            cursor: pointer;
+            accent-color: #00ffff; /* The blue glow color */
+        }
+        
+        /* Custom Thumb for Webkit/Chrome */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px #00ffff;
+            margin-top: -5px; /* Adjust vertical position */
+        }
+
+        /* Dance Buttons */
+        .dance-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .disco-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-1:hover { background: #ff00ff; border-color: #ff00ff; box-shadow: 0 0 15px #ff00ff; }
+        .btn-2:hover { background: #00ffff; border-color: #00ffff; box-shadow: 0 0 15px #00ffff; }
+        .btn-3:hover { background: #ffff00; border-color: #ffff00; box-shadow: 0 0 15px #ffff00; }
+        
+        .btn-special {
+            background: rgba(255, 105, 180, 0.3);
+            border-color: hotpink;
+        }
+        .btn-special:hover {
+            background: hotpink;
+            box-shadow: 0 0 25px hotpink;
+            transform: scale(1.05);
+        }
+
+        .btn-stop {
+            background: rgba(255, 0, 0, 0.3);
+            border-color: red;
+        }
+        .btn-stop:hover { background: red; box-shadow: 0 0 15px red;}
+
+        .flash-active { animation: strobe 0.2s; }
+        @keyframes strobe { 0%, 100% { opacity: 0; } 50% { opacity: 0.8; } }
+
+        .romantic-mode .disco-lights { opacity: 0; }
+        .romantic-mode .romantic-layer { opacity: 1; }
+
+    </style>
+</head>
+<body id="body">
+
+    <div class="ambient-layer"></div>
+    <div class="disco-lights"></div>
+    <div class="romantic-layer"></div>
+    <div class="strobe-flash" id="strobe"></div>
+
+    <div class="stage-container">
+        <div class="bg-dancers-row" id="bgGroup">
+            <img src="bg1.png" class="bg-dancer-img">
+            <img src="bg2.png" class="bg-dancer-img">
+            <img src="bg3.png" class="bg-dancer-img">
+            <img src="bg4.png" class="bg-dancer-img">
+        </div>
+
+        <div class="main-dancers-row">
+            <img src="main1.png" class="dancer-img main-dancer" id="main1">
+            <img src="main2.png" class="dancer-img main-dancer" id="main2">
+            <img src="main3.png" class="dancer-img main-dancer" id="main3">
+        </div>
+    </div>
+
+    <div class="dj-deck-wrapper">
+        
+        <div class="music-player">
+            <div class="top-row">
+                <div class="song-info" id="songTitle">🎵 Ready to Rock</div>
+                <div class="player-controls">
+                    <button onclick="prevSong()">⏮</button>
+                    <button onclick="togglePlay()" id="playBtn">▶</button>
+                    <button onclick="nextSong()">⏭</button>
+                </div>
+            </div>
+            
+            <div class="slider-container">
+                <input type="range" id="seekSlider" value="0" min="0" step="1">
+            </div>
+        </div>
+
+        <div class="dance-controls">
+            <button class="disco-btn btn-1" onclick="triggerMove('move-fever', false)">🕺 Disco Fever</button>
+            <button class="disco-btn btn-2" onclick="triggerMove('move-hop', true)">🚀 Super Hop</button>
+            <button class="disco-btn btn-3" onclick="triggerMove('move-shake', false)">⚡ Earthquake</button>
+            <button class="disco-btn btn-special" onclick="startRomanticDance()">💖 Special Dance</button>
+            <button class="disco-btn btn-stop" onclick="stopDancing()">🛑 Chill Out</button>
+        </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        // --- MUSIC CONFIGURATION ---
+        const playlist = [
+            'song1.mp3', 
+            'song2.mp3', 
+            'song3.mp3'
+        ];
+        const specialSong = 'song4.mp3';
+
+        let currentSongIndex = 0;
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const titleDisplay = document.getElementById('songTitle');
+        const seekSlider = document.getElementById('seekSlider');
+        let isPlaying = false;
+
+        // Initialize
+        audioPlayer.src = playlist[currentSongIndex];
+
+        // --- SLIDER LOGIC ---
+        
+        // 1. When song loads, set slider max value to song duration
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            seekSlider.max = audioPlayer.duration;
+        });
+
+        // 2. As song plays, move the slider
+        audioPlayer.addEventListener('timeupdate', () => {
+            seekSlider.value = audioPlayer.currentTime;
+        });
+
+        // 3. When user drags slider, change song position
+        seekSlider.addEventListener('input', () => {
+            audioPlayer.currentTime = seekSlider.value;
+        });
+
+
+        // --- MUSIC CONTROL FUNCTIONS ---
+        function togglePlay() {
+            if (isPlaying) {
+                audioPlayer.pause();
+                playBtn.innerText = "▶";
+                titleDisplay.innerText = "⏸ Paused";
+            } else {
+                audioPlayer.play();
+                playBtn.innerText = "⏸";
+                titleDisplay.innerText = "🎵 Playing: " + getCleanName();
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            loadAndPlayNormal();
+        }
+
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            loadAndPlayNormal();
+        }
+
+        function loadAndPlayNormal() {
+            audioPlayer.src = playlist[currentSongIndex];
+            audioPlayer.play();
+            isPlaying = true;
+            playBtn.innerText = "⏸";
+            titleDisplay.innerText = "🎵 Playing: " + playlist[currentSongIndex];
+        }
+
+        function getCleanName() {
+            let src = audioPlayer.src;
+            return src.substring(src.lastIndexOf('/')+1);
+        }
+
+        audioPlayer.addEventListener('ended', nextSong);
+
+
+        // --- DANCE LOGIC ---
+        const mainDancers = document.querySelectorAll('.main-dancer');
+        const bgGroup = document.getElementById('bgGroup');
+        const main3 = document.getElementById('main3');
+        const body = document.getElementById('body');
+        const strobeBox = document.getElementById('strobe');
+
+        function triggerMove(moveClass, isOneShot) {
+            stopDancing(); 
+
+            strobeBox.classList.add('flash-active');
+            setTimeout(() => { strobeBox.classList.remove('flash-active'); }, 200);
+
+            mainDancers.forEach((dancer, index) => {
+                dancer.className = 'dancer-img main-dancer';
+                void dancer.offsetWidth; 
+                setTimeout(() => { dancer.classList.add(moveClass); }, index * 100);
+                if(isOneShot) { setTimeout(() => { dancer.classList.remove(moveClass); }, 900); }
+            });
+        }
+
+        function startRomanticDance() {
+            stopDancingLogicOnly(); 
+
+            body.classList.add('romantic-mode');
+            bgGroup.classList.add('vanish');
+            main3.classList.add('vanish');
+            
+            const m1 = document.getElementById('main1');
+            const m2 = document.getElementById('main2');
+            m1.classList.add('romantic-pos-1');
+            m2.classList.add('romantic-pos-2');
+
+            // Play Special Song
+            audioPlayer.src = specialSong;
+            audioPlayer.play();
+            isPlaying = true;
+            playBtn.innerText = "⏸";
+            titleDisplay.innerText = "❤️ Special Mode: " + specialSong;
+        }
+
+        function stopDancing() {
+            stopDancingLogicOnly();
+            // If playing romantic song, switch back to normal playlist
+            if(audioPlayer.src.includes(specialSong)) {
+                loadAndPlayNormal();
+            }
+        }
+
+        function stopDancingLogicOnly() {
+            body.classList.remove('romantic-mode');
+            bgGroup.classList.remove('vanish');
+            main3.classList.remove('vanish');
+            mainDancers.forEach(dancer => {
+                dancer.className = 'dancer-img main-dancer';
+                dancer.classList.remove('romantic-pos-1');
+                dancer.classList.remove('romantic-pos-2');
+            });
+        }
+    </script>
+
+</body>
+</html>
